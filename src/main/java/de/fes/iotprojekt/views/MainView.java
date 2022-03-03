@@ -41,6 +41,9 @@ public class MainView extends VerticalLayout {
     
     private String brokerAdress="tcp://192.168.178.53:1883";
 
+    //Thread bsp, falls etwas im Hintergrund wiederholend durchgeführt werden soll
+    //private FeederThread thread;
+
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
@@ -53,14 +56,19 @@ public class MainView extends VerticalLayout {
         publisher.start("user", "passwd", mqttValues);
         publisher.subscribe("#");
         
-
         System.out.println("onAttach");
+
+        //thread = new FeederThread(TODO thread was mitgeben?);
+        //thread.run();
+        
         
     }
 
     @Override
     protected void onDetach(DetachEvent detachEvent) {
       // TODO document why this method is empty
+      //thread.interrupt();
+      //thread = null;
     }
     
 

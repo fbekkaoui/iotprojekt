@@ -1,16 +1,11 @@
 package de.fes.iotprojekt.views;
 
-import java.util.List;
-
-import de.fes.iotprojekt.mqttClient.MqttPublisher;
-import de.fes.iotprojekt.mqttClient.MqttValue;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.grid.Grid;
 
 public class FeederThread extends Thread {
     
    
 
+    //TODO Thread
     public FeederThread() {
      
     }
@@ -21,12 +16,9 @@ public class FeederThread extends Thread {
             // Update the data for a while
             while (true) {
                 // Sleep to emulate background work
-                Thread.sleep(1000);
-                
+                Thread.sleep(1000);  
             }
-
-            // Inform that we are done
-            
+            // Inform that we are done   
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
