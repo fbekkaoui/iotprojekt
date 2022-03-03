@@ -30,7 +30,7 @@ public class MainView extends VerticalLayout {
 
     private Grid<MqttValue> grid;
     private List<MqttValue> mqttValues;
-    private String mqTTBrokerAdress = "tcp://192.168.178.53:1883";
+    private MqttPublisher publisher;
 
     private FeederThread thread;
 
@@ -39,7 +39,8 @@ public class MainView extends VerticalLayout {
         //add(new Span("Waiting for updates"));
 
         // Start the data feed thread
-        thread = new FeederThread(attachEvent.getUI(), grid, new MqttPublisher(mqTTBrokerAdress, "Client-01"), mqttValues);
+
+        thread = new FeederThread(attachEvent.getUI(), grid);
         thread.start();
 
     }
@@ -52,8 +53,14 @@ public class MainView extends VerticalLayout {
     
 
     public MainView() {
+
+
+        String brokerAdress="tcp://192.168.178.53:1883";
         mqttValues = new ArrayList<>();
-      
+        publisher = new MqttPublisher(brokerAdress, "Client-01");
+        publisher.start("user", "passwd", mqttValues);
+        publisher.subscribe("/test");
+       
         grid = new Grid<>(MqttValue.class, false);
         grid.setItems(mqttValues);
 
@@ -65,11 +72,11 @@ public class MainView extends VerticalLayout {
 
        
        
-        Span title= new Span("Mqtt Broker: "+mqTTBrokerAdress);
+        Span title= new Span("Mqtt Broker: "+brokerAdress);
         setSizeFull();
 
-        TextField text= new TextField("Hallo Jungs");
-       add(title, text, grid);
+        
+       add(title,  grid);
        
     }
 

@@ -25,16 +25,16 @@ public class MqttPublisher {
         }
     }
 
-    public void start(String user, String pwd, List<MqttValue> al){
+    public void start(String user, String pwd, List<MqttValue> mqttValues){
 
-        myCallback=new MyMqttCallback(al);
+        myCallback=new MyMqttCallback(mqttValues);
         client.setCallback(myCallback);
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
 	    connOpts.setCleanSession(true);//??
 	    connOpts.setUserName(user);
         connOpts.setPassword(pwd.toCharArray());
-    
+     
         try {
 
             client.connect(connOpts);

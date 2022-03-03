@@ -10,14 +10,11 @@ import com.vaadin.flow.component.grid.Grid;
 public class FeederThread extends Thread {
     private final UI ui;
     private final Grid<MqttValue> view;
-    private final MqttPublisher publisher;
-    private List<MqttValue> mqttValues;
-
+    private Boolean update;
    
 
-    public FeederThread(UI ui, Grid<MqttValue> view, MqttPublisher publisher, List<MqttValue> mqttValues) {
-        this.mqttValues=mqttValues;
-        this.publisher=publisher;
+    public FeederThread(UI ui, Grid<MqttValue> view) {
+     
         this.ui = ui;
         this.view = view;
     }
@@ -25,11 +22,6 @@ public class FeederThread extends Thread {
     @Override
     public void run() {
         try {
-
-            publisher.start("user", "passwd", mqttValues);
-            publisher.subscribe("/test");
-            
-
             // Update the data for a while
             while (true) {
                 // Sleep to emulate background work

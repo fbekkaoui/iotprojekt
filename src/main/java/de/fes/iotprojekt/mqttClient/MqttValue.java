@@ -16,7 +16,7 @@ public class MqttValue {
         this.topic = topic;
         this.timeStamp = LocalDateTime.now();
     }
-
+ 
     /**
      * @return the message
      */

@@ -20,7 +20,7 @@ public class MyMqttCallback implements MqttCallback  {
     @Override
     public void connectionLost(Throwable cause) {
         // TODO Auto-generated method stub
-        
+         
     }
 
     @Override
