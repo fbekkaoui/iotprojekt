@@ -8,15 +8,11 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 
 public class FeederThread extends Thread {
-    private final UI ui;
-    private final Grid<MqttValue> view;
-    private Boolean update;
+    
    
 
-    public FeederThread(UI ui, Grid<MqttValue> view) {
+    public FeederThread() {
      
-        this.ui = ui;
-        this.view = view;
     }
 
     @Override
@@ -25,8 +21,8 @@ public class FeederThread extends Thread {
             // Update the data for a while
             while (true) {
                 // Sleep to emulate background work
-                Thread.sleep(100);
-                ui.access(() -> view.getDataProvider().refreshAll());
+                Thread.sleep(1000);
+                
             }
 
             // Inform that we are done
