@@ -5,9 +5,13 @@ import java.util.List;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
@@ -19,6 +23,7 @@ import com.vaadin.flow.theme.Theme;
 
 import de.fes.iotprojekt.mqttClient.MqttPublisher;
 import de.fes.iotprojekt.mqttClient.MqttValue;
+import de.fes.iotprojekt.mqttClient.MyMqttCallback;
 
 @PWA(name = "IoTProjekt", shortName = "IoTProjekt", enableInstallPrompt = false)
 @Theme(themeFolder = "iotprojekt")
@@ -31,53 +36,80 @@ public class MainView extends VerticalLayout {
     private Grid<MqttValue> grid;
     private List<MqttValue> mqttValues;
     private MqttPublisher publisher;
+    private MyMqttCallback myCallback;
+    private MainViewController mainViewController;
+    
+    private String brokerAdress="tcp://192.168.178.53:1883";
 
-    private FeederThread thread;
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        //add(new Span("Waiting for updates"));
 
-        // Start the data feed thread
+        //attach 
+        mainViewController= new MainViewController(attachEvent.getUI(), grid);
 
-        thread = new FeederThread(attachEvent.getUI(), grid);
-        thread.start();
+        myCallback=new MyMqttCallback(mqttValues, mainViewController);
+        publisher = new MqttPublisher(brokerAdress, "Client-01", myCallback);
+        publisher.start("user", "passwd", mqttValues);
+        publisher.subscribe("#");
+        
 
+        System.out.println("onAttach");
+        
     }
 
     @Override
     protected void onDetach(DetachEvent detachEvent) {
-        thread.interrupt();
-        thread = null;
+      // TODO document why this method is empty
     }
     
 
     public MainView() {
-
-
-        String brokerAdress="tcp://192.168.178.53:1883";
+          
         mqttValues = new ArrayList<>();
-        publisher = new MqttPublisher(brokerAdress, "Client-01");
-        publisher.start("user", "passwd", mqttValues);
-        publisher.subscribe("/test");
+
        
+        add(new Span("Mqtt Broker Adress: "+brokerAdress));
+        
+        setSizeFull();
+
+        genExamplePublish();
+        genExampleSubscribe();
+    }
+
+    public void genExampleSubscribe(){
+
         grid = new Grid<>(MqttValue.class, false);
         grid.setItems(mqttValues);
 
-        grid.addColumn(MqttValue::getTopic).setHeader("Pfad").setSortable(true);
-        grid.addColumn(MqttValue::getMessage).setHeader("Nachricht").setSortable(true);
-        grid.addColumn(new LocalDateTimeRenderer<>(MqttValue::getTimeStamp,
-        "dd.MM.YYYY hh:mm:ss")).setHeader("Zeitstempel").setSortable(true)
-        .setComparator(MqttValue::getTimeStamp);
-
-       
-       
-        Span title= new Span("Mqtt Broker: "+brokerAdress);
-        setSizeFull();
-
+        grid.addColumn(MqttValue::getTopic).setHeader("Pfad");
+        grid.addColumn(MqttValue::getMessage).setHeader("Nachricht");
+        grid.addColumn(new LocalDateTimeRenderer<>(MqttValue::getTimeStamp,"dd.MM.YYYY hh:mm:ss"))
+            .setHeader("Zeitstempel").setComparator(MqttValue::getTimeStamp);
+          
         
-       add(title,  grid);
-       
+       add(grid);
+
+    }
+
+    public void genExamplePublish(){
+
+
+        HorizontalLayout ePublish= new HorizontalLayout();
+        Button btnPublish=new Button("Publish");
+        TextField tfMessage = new TextField("Message");
+        TextField tfTopic = new TextField("Topic");
+
+        btnPublish.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnPublish.addClickListener(e-> {
+            publisher.publish(tfTopic.getValue(), tfMessage.getValue());
+        });
+
+        ePublish.setVerticalComponentAlignment(FlexComponent.Alignment.END, btnPublish);
+        
+        ePublish.add(tfTopic, tfMessage, btnPublish);
+        add(ePublish);
+
     }
 
 }

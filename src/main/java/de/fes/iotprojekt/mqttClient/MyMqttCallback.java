@@ -2,18 +2,29 @@ package de.fes.iotprojekt.mqttClient;
 
 
 import java.util.List;
+import java.util.Optional;
+
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.grid.Grid;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import de.fes.iotprojekt.views.MainViewController;
 
 public class MyMqttCallback implements MqttCallback  {
 
-    List<MqttValue> al;
+    List<MqttValue> mqttValues;
+
+    private MainViewController mainViewController;
    
 
-    public MyMqttCallback(List<MqttValue> al){
-        this.al=al;
+    public MyMqttCallback(List<MqttValue> mqttValues, MainViewController mainViewController){
+        
+        this.mainViewController=mainViewController;
+        this.mqttValues=mqttValues;
 
         System.out.println("Callback started!!");
     }
@@ -27,6 +38,8 @@ public class MyMqttCallback implements MqttCallback  {
     public void deliveryComplete(IMqttDeliveryToken token) {
         // TODO Auto-generated method stub
         
+        System.out.println("Delivery complete");
+        
     }
 
     @Override
@@ -34,12 +47,14 @@ public class MyMqttCallback implements MqttCallback  {
         // TODO Auto-generated method stub
 
 
-        System.out.println(message.toString());
+        MqttValue value =new MqttValue(message.toString(), topic);
+        System.out.println(value.toString());
 
-        al.add(new MqttValue(message.toString(), topic));
-        
-      
+        mqttValues.add(value);
+        mainViewController.updateGrid();
+    
         
     }
+    
 }
 

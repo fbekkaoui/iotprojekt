@@ -6,6 +6,8 @@ import java.util.List;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
 public class MqttPublisher {
 
@@ -14,8 +16,9 @@ public class MqttPublisher {
    
 
 
-    public MqttPublisher(String mqttBroker, String clientName)  {
+    public MqttPublisher(String mqttBroker, String clientName, MyMqttCallback myCallback)  {
  
+        this.myCallback=myCallback;
         try {
              client=new MqttClient(mqttBroker, clientName);
         
@@ -27,7 +30,7 @@ public class MqttPublisher {
 
     public void start(String user, String pwd, List<MqttValue> mqttValues){
 
-        myCallback=new MyMqttCallback(mqttValues);
+       
         client.setCallback(myCallback);
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -56,7 +59,18 @@ public class MqttPublisher {
         }
     }
 
-    public void publish(){
-        //client.publish(topic, message);
+    public void publish(String topic,  String strMessage){
+        
+        MqttMessage message= new MqttMessage(strMessage.getBytes());
+        
+        try {
+            client.publish(topic, message);
+        } catch (MqttPersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (MqttException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
