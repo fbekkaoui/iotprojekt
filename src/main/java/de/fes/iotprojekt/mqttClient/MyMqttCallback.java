@@ -2,14 +2,9 @@ package de.fes.iotprojekt.mqttClient;
 
 
 import java.util.List;
-import java.util.Optional;
-
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.grid.Grid;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import de.fes.iotprojekt.views.MainViewController;

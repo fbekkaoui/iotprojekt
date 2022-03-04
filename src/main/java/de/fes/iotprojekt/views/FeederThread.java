@@ -3,8 +3,6 @@ package de.fes.iotprojekt.views;
 
 public class FeederThread extends Thread {
     
-   
-
     //TODO Thread
     public FeederThread() {
      
