@@ -7,8 +7,12 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -90,20 +94,23 @@ public class MainView extends VerticalLayout {
         grid = new Grid<>(MqttValue.class, false);
         grid.setItems(mqttValues);
 
-        grid.addColumn(MqttValue::getTopic).setHeader("Pfad");
-        grid.addColumn(MqttValue::getMessage).setHeader("Nachricht");
+        grid.addColumn(MqttValue::getTopic).setHeader("Pfad").setSortable(true);
+        grid.addColumn(MqttValue::getMessage).setHeader("Nachricht").setSortable(true);
         grid.addColumn(new LocalDateTimeRenderer<>(MqttValue::getTimeStamp,"dd.MM.YYYY hh:mm:ss"))
-            .setHeader("Zeitstempel").setComparator(MqttValue::getTimeStamp);
+            .setHeader("Zeitstempel").setSortable(true).setComparator(MqttValue::getTimeStamp);
           
+        grid.setSelectionMode(SelectionMode.SINGLE);
+        grid.addItemClickListener(event -> Notification.show(event.getItem().toString()));
         
        add(grid);
 
     }
 
     public void genExamplePublish(){
-
-
+        
+        
         HorizontalLayout ePublish= new HorizontalLayout();
+
         Button btnPublish=new Button("Publish");
         TextField tfMessage = new TextField("Message");
         TextField tfTopic = new TextField("Topic");
@@ -114,8 +121,8 @@ public class MainView extends VerticalLayout {
         });
 
         ePublish.setVerticalComponentAlignment(FlexComponent.Alignment.END, btnPublish);
-        
         ePublish.add(tfTopic, tfMessage, btnPublish);
+   
         add(ePublish);
 
     }
