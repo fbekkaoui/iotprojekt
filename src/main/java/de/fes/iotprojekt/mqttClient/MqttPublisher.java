@@ -1,6 +1,8 @@
 package de.fes.iotprojekt.mqttClient;
 
 
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -20,9 +22,9 @@ public class MqttPublisher {
  
         this.myCallback=myCallback;
         try {
-             client=new MqttClient(mqttBroker, clientName);
+             client=new MqttClient(UriResolver.Resolve(mqttBroker).toString(), clientName);
         
-        } catch (MqttException e) {
+        } catch (MqttException | URISyntaxException | UnknownHostException e) {
             e.printStackTrace();
             //System.exit(1);
         }

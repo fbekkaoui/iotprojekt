@@ -42,8 +42,8 @@ public class MainView extends VerticalLayout {
     private MqttPublisher publisher;
     private MyMqttCallback myCallback;
     private MainViewController mainViewController;
-    
-    private String brokerAdress="tcp://192.168.178.53:1883";
+
+    private String brokerAdress="tcp://localhost:1883";
 
     //Thread bsp, falls etwas im Hintergrund wiederholend durchgeführt werden soll
     //private FeederThread thread;
