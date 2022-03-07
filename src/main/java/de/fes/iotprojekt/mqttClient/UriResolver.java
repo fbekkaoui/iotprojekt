@@ -7,6 +7,9 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Samuel Meenzen
+ */
 public class UriResolver
 {
     private final static Logger logger = Logger.getLogger(UriResolver.class.getName());
