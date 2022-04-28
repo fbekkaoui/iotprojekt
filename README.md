@@ -1,7 +1,7 @@
 # IoTProjekt
 
 This project can be used as a starting point to create your own Vaadin IoT application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+It contains all the necessary configuration and some placeholder files to get you started. 
 
 ## Running the application
 
