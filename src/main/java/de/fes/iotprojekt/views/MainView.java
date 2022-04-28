@@ -27,6 +27,7 @@ import com.vaadin.flow.theme.Theme;
 
 import de.fes.iotprojekt.mqttClient.MqttPublisher;
 import de.fes.iotprojekt.mqttClient.MqttValue;
+import de.fes.iotprojekt.mqttClient.MqttValueService;
 import de.fes.iotprojekt.mqttClient.MyMqttCallback;
 
 @PWA(name = "IoTProjekt", shortName = "IoTProjekt", enableInstallPrompt = false)
@@ -43,7 +44,9 @@ public class MainView extends VerticalLayout {
     private MyMqttCallback myCallback;
     private MainViewController mainViewController;
     
-    private String brokerAdress="tcp://192.168.178.53:1883";
+    private String brokerAdress="tcp://127.0.0.1:1883";
+
+    MqttValueService mqttValueService;
 
     //Thread bsp, falls etwas im Hintergrund wiederholend durchgeführt werden soll
     //private FeederThread thread;
@@ -57,7 +60,7 @@ public class MainView extends VerticalLayout {
 
         myCallback=new MyMqttCallback(mqttValues, mainViewController);
         publisher = new MqttPublisher(brokerAdress, "Client-01", myCallback);
-        publisher.start("user", "passwd", mqttValues);
+        publisher.start("user", "passwd");
         publisher.subscribe("#");
         
         System.out.println("onAttach");
@@ -76,17 +79,40 @@ public class MainView extends VerticalLayout {
     }
     
 
-    public MainView() {
-          
-        mqttValues = new ArrayList<>();
+    public MainView(MqttValueService mqttValueService) {
 
-       
+        this.mqttValueService=mqttValueService;
+          
+        mqttValues = mqttValueService.findAll();
+        
         add(new Span("Mqtt Broker Adress: "+brokerAdress));
         
         setSizeFull();
 
         genExamplePublish();
         genExampleSubscribe();
+    }
+
+    public void genExamplePublish(){
+          
+        HorizontalLayout ePublish= new HorizontalLayout();
+
+        Button btnPublish=new Button("Publish");
+        TextField tfMessage = new TextField("Message");
+        TextField tfTopic = new TextField("Topic");
+
+        btnPublish.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        btnPublish.addClickListener(e-> {
+            publisher.publish(tfTopic.getValue(), tfMessage.getValue());
+            mqttValueService.update(new MqttValue(tfMessage.getValue(), tfTopic.getValue()));
+
+        });
+
+        ePublish.setVerticalComponentAlignment(FlexComponent.Alignment.END, btnPublish);
+        ePublish.add(tfTopic, tfMessage, btnPublish);
+   
+        add(ePublish);
+
     }
 
     public void genExampleSubscribe(){
@@ -106,25 +132,6 @@ public class MainView extends VerticalLayout {
 
     }
 
-    public void genExamplePublish(){
-        
-        
-        HorizontalLayout ePublish= new HorizontalLayout();
-
-        Button btnPublish=new Button("Publish");
-        TextField tfMessage = new TextField("Message");
-        TextField tfTopic = new TextField("Topic");
-
-        btnPublish.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        btnPublish.addClickListener(e-> {
-            publisher.publish(tfTopic.getValue(), tfMessage.getValue());
-        });
-
-        ePublish.setVerticalComponentAlignment(FlexComponent.Alignment.END, btnPublish);
-        ePublish.add(tfTopic, tfMessage, btnPublish);
-   
-        add(ePublish);
-
-    }
+    
 
 }

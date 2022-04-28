@@ -3,7 +3,10 @@ package de.fes.iotprojekt.mqttClient;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class MqttValue {
+import javax.persistence.Entity;
+
+@Entity
+public class MqttValue extends AbstractEntity {
     private String message;
     private String topic;
     private LocalDateTime timeStamp;

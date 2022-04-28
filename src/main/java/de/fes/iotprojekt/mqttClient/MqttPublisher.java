@@ -1,8 +1,5 @@
 package de.fes.iotprojekt.mqttClient;
 
-
-import java.util.List;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -28,7 +25,7 @@ public class MqttPublisher {
         }
     }
 
-    public void start(String user, String pwd, List<MqttValue> mqttValues){
+    public void start(String user, String pwd){
 
        
         client.setCallback(myCallback);
