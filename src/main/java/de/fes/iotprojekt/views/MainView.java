@@ -84,7 +84,7 @@ public class MainView extends VerticalLayout {
         this.mqttValueService=mqttValueService;
           
         mqttValues = mqttValueService.findAll();
-        
+
         add(new Span("Mqtt Broker Adress: "+brokerAdress));
         
         setSizeFull();
